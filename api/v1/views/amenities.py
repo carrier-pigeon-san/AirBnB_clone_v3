@@ -1,36 +1,38 @@
 #!/usr/bin/python3
 """
-Handles all default RESTFul API actions for the State object
+Handles all default RESTFul API actions for the Amenity object
 """
 
 from api.v1.views import app_views
 from flask import request, jsonify, abort
 from models import storage
-from models.state import State
+from models.amenity import Amenity
 
 
-@app_views.route('/states', methods=['GET', 'POST'], strict_slashes=False)
-@app_views.route('/states/<state_id>',
+@app_views.route('/amenities', methods=['GET', 'POST'], strict_slashes=False)
+@app_views.route('/amenities/<amenity_id>',
                  methods=['GET', 'DELETE', 'PUT'],
                  strict_slashes=False)
-def states(state_id=None):
-    states = storage.all('State')
-    key = 'State.' + state_id if state_id else None
+def amenities(amenity_id=None):
+    amenities = storage.all(Amenity)
+    key = 'Amenity.' + amenity_id if amenity_id else None
 
     if request.method == 'GET':
         if not key:
-            return jsonify([state.to_dict() for state in states.values()])
+            return jsonify(
+                [amenity.to_dict() for amenity in amenities.values()]
+                )
 
-        if key not in states.keys():
+        if key not in amenities.keys():
             abort(404)
 
-        return jsonify(states[key].to_dict())
+        return jsonify(amenities[key].to_dict())
 
     if request.method == "DELETE":
-        if key not in states.keys():
+        if key not in amenities.keys():
             abort(404)
 
-        storage.delete(states[key])
+        storage.delete(amenities[key])
         storage.save()
         return jsonify({}), 200
 
@@ -43,13 +45,13 @@ def states(state_id=None):
         if 'name' not in req_body:
             abort(400, 'Missing name')
 
-        state = State(**req_body)
-        storage.new(state)
+        amenity = Amenity(**req_body)
+        storage.new(amenity)
         storage.save()
-        return jsonify(state.to_dict()), 201
+        return jsonify(amenity.to_dict()), 201
 
     if request.method == "PUT":
-        if key not in states.keys():
+        if key not in amenities.keys():
             abort(404)
 
         if not request.is_json:
@@ -57,12 +59,12 @@ def states(state_id=None):
 
         req_body = request.get_json()
 
-        state = states[key]
+        amenity = amenities[key]
 
         for key, val in req_body.items():
             if key in ["id", "created_at", "updated_at"]:
                 continue
-            setattr(state, key, val)
+            setattr(amenity, key, val)
 
         storage.save()
-        return jsonify(state.to_dict()), 200
+        return jsonify(amenity.to_dict()), 200
