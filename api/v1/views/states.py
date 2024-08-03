@@ -25,8 +25,7 @@ def get_states(state_id=None):
             abort(404)
 
         return jsonify(states[key].to_dict())
-    
-    
+
     if request.method == "DELETE":
         if key not in states.keys():
             abort(404)
@@ -34,8 +33,7 @@ def get_states(state_id=None):
         storage.delete(states[key])
         storage.save()
         return jsonify({}), 200
-    
-    
+
     if request.method == "POST":
         if not request.is_json:
             abort(400, 'Not a JSON')
@@ -50,7 +48,6 @@ def get_states(state_id=None):
         storage.save()
         return jsonify(state.to_dict()), 201
 
-    
     if request.method == "PUT":
         if key not in states.keys():
             abort(404)
@@ -69,5 +66,3 @@ def get_states(state_id=None):
 
         storage.save()
         return jsonify(state.to_dict()), 200
-
-
