@@ -8,9 +8,6 @@ from flask import Flask
 from models import storage
 from os import getenv
 
-host = getenv("HBNB_API_HOST") or '0.0.0.0'
-port = getenv("HBNB_API_PORT") or '5000'
-
 app = Flask(__name__)
 app.register_blueprint(app_views)
 
@@ -21,4 +18,6 @@ def tear_down(arg=None):
 
 
 if __name__ == "__main__":
-    app.run(host=host, port=port, threaded=True)
+    HOST = getenv("HBNB_API_HOST") or '0.0.0.0'
+    PORT = int(getenv("HBNB_API_PORT")) or 5000
+    app.run(host=HOST, port=PORT, threaded=True)
