@@ -11,7 +11,9 @@ from models.place import Place
 from models.user import User
 
 
-@app_views.route('/cities/<city_id>/places', methods=['GET', 'POST'], strict_slashes=False)
+@app_views.route('/cities/<city_id>/places',
+                 methods=['GET', 'POST'],
+                 strict_slashes=False)
 def city_places(city_id):
     """
     Gets or adds new place
@@ -20,7 +22,7 @@ def city_places(city_id):
 
     if not city:
         abort(404)
-    
+
     places = city.places
 
     if request.method == 'GET':
@@ -47,8 +49,11 @@ def city_places(city_id):
         city['places'].append(place)
         storage.save()
         return jsonify(place.to_dict()), 201
-    
-@app_views.route('/places/<place_id>', methods=['GET', 'POST', 'DELETE', 'PUT'], strict_slashes=False)
+
+
+@app_views.route('/places/<place_id>',
+                 methods=['GET', 'DELETE', 'PUT'],
+                 strict_slashes=False)
 def places(place_id=None):
     """
     """
@@ -59,12 +64,12 @@ def places(place_id=None):
 
     if request.method == 'GET':
         return jsonify(place.to_dict()), 200
-    
+
     if request.method == 'DELETE':
         storage.delete(place)
         storage.save()
         return jsonify({}), 200
-    
+
     if request.method == 'PUT':
         if not request.is_json:
             abort(400, 'Not a JSON')
