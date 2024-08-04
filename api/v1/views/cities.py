@@ -10,7 +10,7 @@ from models.state import State
 from models import storage
 
 
-@app_views.route('/cities', strict_slashes = False)
+@app_views.route('/cities', strict_slashes=False)
 @app_views.route('/states/<state_id>/cities', strict_slashes=False)
 def all_cities(state_id):
     """retrieves list of all city objects of a state"""
@@ -52,7 +52,8 @@ def delete_city(city_id):
         abort(404)
 
 
-@app_views.route('/states/<state_id>/cities', methods=['POST'], strict_slashes=False)
+@app_views.route('/states/<state_id>/cities', methods=['POST'],
+                 strict_slashes=False)
 def create_city(state_id):
     """creates a city"""
     state_key = f'State.{state_id}'
@@ -60,9 +61,9 @@ def create_city(state_id):
         abort(404)
     request_data = request.get_json()
     if request_data is None:
-        return make_response("Not a JSON", 400)
+        abort(400, "Not a JSON")
     if "name" not in request_data:
-        return make_response("Missing name", 400)
+        abort(400, "Missing name")
     new_city = City(**request_data)
     new_city.state_id = state_id
     new_city.save()
@@ -78,7 +79,7 @@ def update_city(city_id):
         abort(404)
     request_data = request.get_json()
     if request_data is None:
-        return make_response("Not a JSON", 400)
+        abort(400, "Not a JSON")
     city_object = city_objects[city_key]
     for key, value in request_data.items():
         if key not in ("id", "state_id", "created_at", "updated_at"):
