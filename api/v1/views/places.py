@@ -46,7 +46,6 @@ def city_places(city_id):
 
         place = Place(**req_body)
         storage.new(place)
-        city['places'].append(place)
         storage.save()
         return jsonify(place.to_dict()), 201
 
@@ -56,6 +55,8 @@ def city_places(city_id):
                  strict_slashes=False)
 def places(place_id=None):
     """
+    Defines GET, DELETE, and PUT actions for
+    Place object
     """
     place = storage.get(Place, place_id)
 
