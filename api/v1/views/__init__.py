@@ -14,3 +14,4 @@ from api.v1.views.amenities import *
 from api.v1.views.places import *
 from api.v1.views import cities
 from api.v1.views import users
+from api.v1.views import places_reviews
