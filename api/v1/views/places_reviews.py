@@ -28,7 +28,7 @@ def all_reviews(place_id):
 
 
 @app_views.route('/reviews', strict_slashes=False)
-@app_views.route('/reviews/<review_id', methods=['GET'], strict_slashes=False)
+@app_views.route('/reviews/<review_id>', methods=['GET'], strict_slashes=False)
 def a_review(review_id):
     """retrieves a review object"""
     reviews = storage.all(Review)
@@ -39,7 +39,7 @@ def a_review(review_id):
     return jsonify(review.to_dict()), 200
 
 
-@app_views.route('/reviews/<review_id', methods=['DELETE'], strict_slashes=False)
+@app_views.route('/reviews/<review_id>', methods=['DELETE'], strict_slashes=False)
 def delete_reviews(review_id):
     """deletes a review object"""
     reviews = storage.all(Review)
@@ -47,7 +47,7 @@ def delete_reviews(review_id):
     if review_key not in reviews:
         abort(404)
     storage.delete(reviews[review_key])
-    storage.save
+    storage.save()
     return jsonify({}), 200
 
 
@@ -66,7 +66,7 @@ def create_review(place_id):
     if "user_id" not in request_data:
         abort(400, "Missing user_id")
     if "text" not in request_data:
-        abort(404, "Missing text")
+        abort(400, "Missing text")
     user_key = f"User.{request_data.get('user_id')}"
     if user_key not in users:
         abort(404)
