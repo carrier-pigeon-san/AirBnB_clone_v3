@@ -82,4 +82,5 @@ def update_city(city_id):
     for key, value in request_data.items():
         if key not in ("id", "state_id", "created_at", "updated_at"):
             setattr(city_object, key, value)
+    city_object.save()
     return jsonify(city_object.to_dict())
