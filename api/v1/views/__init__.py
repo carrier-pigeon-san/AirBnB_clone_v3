@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+"""
+initialize views folder
+"""
 
 
 from flask import Blueprint
