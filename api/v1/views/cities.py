@@ -10,7 +10,8 @@ from models.state import State
 from models import storage
 
 
-@app_views.route('/states/<state_id>/cities')
+@app_views.route('/cities', strict_slashes = False)
+@app_views.route('/states/<state_id>/cities', strict_slashes=False)
 def all_cities(state_id):
     """retrieves list of all city objects of a state"""
     state_cities = []
@@ -23,21 +24,21 @@ def all_cities(state_id):
     for city in city_objects.values():
         if city.state_id == state_id:
             state_cities.append(city.to_dict())
-    return jsonify(state_cities)
+    return jsonify(state_cities), 200
 
 
-@app_views.route('/cities/<city_id>')
+@app_views.route('/cities/<city_id>', strict_slashes=False)
 def a_city(city_id):
     """retrieves a city object"""
     city_objects = storage.all(City)
     city_key = f'City.{city_id}'
     if city_key in city_objects:
-        return jsonify(city_objects[city_key].to_dict())
+        return jsonify(city_objects[city_key].to_dict()), 200
     else:
         abort(404)
 
 
-@app_views.route('/cities/<city_id>', methods=['DELETE'])
+@app_views.route('/cities/<city_id>', methods=['DELETE'], strict_slashes=False)
 def delete_city(city_id):
     """deletes a city object"""
     city_objects = storage.all(City)
@@ -51,7 +52,7 @@ def delete_city(city_id):
         abort(404)
 
 
-@app_views.route('/states/<state_id>/cities', methods=['POST'])
+@app_views.route('/states/<state_id>/cities', methods=['POST'], strict_slashes=False)
 def create_city(state_id):
     """creates a city"""
     state_key = f'State.{state_id}'
@@ -68,7 +69,7 @@ def create_city(state_id):
     return jsonify(new_city.to_dict()), 201
 
 
-@app_views.route('/cities/<city_id>', methods=['PUT'])
+@app_views.route('/cities/<city_id>', methods=['PUT'], strict_slashes=False)
 def update_city(city_id):
     """updates a city"""
     city_objects = storage.all(City)
@@ -83,4 +84,4 @@ def update_city(city_id):
         if key not in ("id", "state_id", "created_at", "updated_at"):
             setattr(city_object, key, value)
     city_object.save()
-    return jsonify(city_object.to_dict())
+    return jsonify(city_object.to_dict()), 200
