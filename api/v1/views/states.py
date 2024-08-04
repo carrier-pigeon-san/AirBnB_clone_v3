@@ -14,6 +14,7 @@ from models.state import State
                  methods=['GET', 'DELETE', 'PUT'],
                  strict_slashes=False)
 def states(state_id=None):
+    """defines GET, DELETE, POST, and PUT for State object"""
     states = storage.all('State')
     key = 'State.' + state_id if state_id else None
 
