@@ -20,10 +20,12 @@ def all_cities(state_id):
 
     if state_key not in state_objects:
         abort(404)
+
     for city in city_objects.values():
         if city.state_id == state_id:
             state_cities.append(city.to_dict())
-    return jsonify(state_cities), 200
+
+    return jsonify(state_cities)
 
 
 @app_views.route('/cities/<city_id>', strict_slashes=False)
@@ -31,10 +33,11 @@ def a_city(city_id):
     """retrieves a city object"""
     city_objects = storage.all(City)
     city_key = f'City.{city_id}'
-    if city_key in city_objects:
-        return jsonify(city_objects[city_key].to_dict()), 200
-    else:
+
+    if city_key not in city_objects:
         abort(404)
+
+    return jsonify(city_objects[city_key].to_dict())
 
 
 @app_views.route('/cities/<city_id>', methods=['DELETE'], strict_slashes=False)
