@@ -45,13 +45,14 @@ def delete_city(city_id):
     """deletes a city object"""
     city_objects = storage.all(City)
     city_key = f'City.{city_id}'
-    if city_key in city_objects:
-        city_object = city_objects[city_key]
-        storage.delete(city_object)
-        storage.save()
-        return make_response(jsonify({}), 200)
-    else:
+
+    if city_key not in city_objects:
         abort(404)
+
+    city_object = city_objects[city_key]
+    storage.delete(city_object)
+    storage.save()
+    return jsonify({}), 200
 
 
 @app_views.route('/states/<state_id>/cities', methods=['POST'],
