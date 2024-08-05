@@ -63,7 +63,7 @@ class BaseModel:
             new_dict["created_at"] = new_dict["created_at"].strftime(time)
         if "updated_at" in new_dict:
             new_dict["updated_at"] = new_dict["updated_at"].strftime(time)
-        if "password" in new_dict and models.storage_t == "db":
+        if pwd and models.storage_t == "db":
             del new_dict['password']
         new_dict["__class__"] = self.__class__.__name__
         if "_sa_instance_state" in new_dict:
