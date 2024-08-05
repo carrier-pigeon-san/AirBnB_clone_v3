@@ -18,12 +18,13 @@ def city_places(city_id):
     """
     Gets or adds new place
     """
-    city = storage.get(City, city_id)
+    cities = storage.all(City)
+    city_key = f"City.{city_id}"
 
-    if not city:
+    if city_key not in cities:
         abort(404)
 
-    places = city.places
+    places = cities[city_key].places
 
     if request.method == 'GET':
         return jsonify([place.to_dict() for place in places])
@@ -41,7 +42,10 @@ def city_places(city_id):
         if 'user_id' not in req_body:
             abort(400, 'Missing user_id')
 
-        if not storage.get(User, req_body['user_id']):
+        users = storage.all(User)
+        user_id = req_body['user_id']
+
+        if f"User.{user_id}" not in users:
             abort(404)
 
         place = Place(**req_body)
@@ -58,9 +62,11 @@ def places(place_id=None):
     Defines GET, DELETE, and PUT actions for
     Place object
     """
-    place = storage.get(Place, place_id)
+    places = storage.all(City)
+    place_key = f"Place.{place_id}"
+    place = places[place_key]
 
-    if not place:
+    if place_key not in places:
         abort(404)
 
     if request.method == 'GET':
