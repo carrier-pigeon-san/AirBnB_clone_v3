@@ -10,7 +10,6 @@ from models.state import State
 from models import storage
 
 
-@app_views.route('/cities', strict_slashes=False)
 @app_views.route('/states/<state_id>/cities', strict_slashes=False)
 def all_cities(state_id):
     """retrieves list of all city objects of a state"""
