@@ -14,7 +14,11 @@ from models.amenity import Amenity
                  methods=['GET', 'DELETE', 'PUT'],
                  strict_slashes=False)
 def amenities(amenity_id=None):
+<<<<<<< HEAD
     """RESTful api actions for Amenity object"""
+=======
+    """Handles default RESTful actions of Amenity object"""
+>>>>>>> master
     amenities = storage.all(Amenity)
     key = 'Amenity.' + amenity_id if amenity_id else None
 
