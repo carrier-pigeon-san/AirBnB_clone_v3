@@ -31,9 +31,6 @@ def all_cities(state_id):
 @app_views.route('/cities/<city_id>', strict_slashes=False)
 def a_city(city_id=None):
     """retrieves a city object"""
-    #if city_id is None:
-    #    abort(404)
-
     city_objects = storage.all(City)
     city_key = f'City.{city_id}'
 
