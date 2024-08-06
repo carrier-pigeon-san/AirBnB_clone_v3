@@ -29,37 +29,63 @@ def placeAmenities(place_id):
 
 
 @app_views.route('/places/<place_id>/amenities/<amenity_id>',
-                 methods=['DELETE', 'POST'], strict_slashes=False)
-def deletePlaceAmenity(place_id, amenity_id):
+                 methods=['DELETE'], strict_slashes=False)
+def deletePlaceAmenity(place_id, amenity_id=None):
     """
     Deletes an amenity linked to a place
     """
+    if not amenity_id:
+        abort(404)
+
     places = storage.all(Place)
-    amenities = storage.all(Amenity)
-
     placeKey = 'Place.' + place_id
-    amenityKey = 'Amenity.' + amenity_id
 
-    if placeKey not in places or amenityKey not in amenities:
+    if placeKey not in places:
         abort(404)
 
     place = places[placeKey]
-    placeAmenities = place.amenities
+    amenities = place.amenities
+    amenityKey = 'Amenity.' + amenity_id
+
+    if amenityKey not in amenities:
+        abort(404)
+
     amenity = amenities[amenityKey]
 
-    if request.method == 'DELETE':
-        if amenityKey not in placeAmenities:
-            abort(404)
+    storage.delete(amenity)
+    storage.save()
+    return jsonify({}), 200
 
-        storage.delete(amenity)
+
+@app_views.route('/places/<place_id>/amenities/<amenity_id>',
+                 methods=['DELETE'], strict_slashes=False)
+def postPlaceAmenity(place_id, amenity_id=None):
+    """
+    Adds an amenity object to a place
+    """
+    if not amenity_id:
+        abort(404)
+
+    places = storage.all(Place)
+    placeKey = 'Place.' + place_id
+
+    if placeKey not in places:
+        abort(404)
+
+    amenities = storage.all(Amenity)
+    amenityKey = 'Amenity.' + amenity_id
+
+    if amenityKey not in amenities:
+        abort(404)
+
+    placeAmenities = places[placeKey].amenities
+    amenity = amenities[amenityKey]
+
+    statusCode = 200
+
+    if amenityKey not in placeAmenities:
+        statusCode = 201
+        placeAmenities.append(amenity)
         storage.save()
-        return jsonify({}), 200
 
-    if request.method == 'POST':
-        statusCode = 200
-        if amenityKey not in placeAmenities:
-            statusCode = 201
-            placeAmenities.append(amenity)
-            storage.save()
-
-        return jsonify(amenity.to_dict()), statusCode
+    return jsonify(amenity.to_dict()), statusCode
