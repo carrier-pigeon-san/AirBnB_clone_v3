@@ -64,10 +64,11 @@ def places(place_id=None):
     """
     places = storage.all(Place)
     place_key = "Place." + place_id
-    place = places[place_key]
 
     if place_key not in places:
         abort(404)
+
+    place = places[place_key]
 
     if request.method == 'GET':
         return jsonify(place.to_dict()), 200
