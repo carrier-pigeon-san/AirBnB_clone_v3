@@ -25,7 +25,7 @@ def a_user(user_id):
     user_key = "User." + user_id
     if user_key not in user_objects:
         abort(404)
-    return jsonify(user_objects[user_key].to_dict()), 200
+    return jsonify(user_objects[user_key].to_dict())
 
 
 @app_views.route('/users/<user_id>', methods=['DELETE'], strict_slashes=False)
