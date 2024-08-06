@@ -11,33 +11,38 @@ from models.user import User
 
 
 @app_views.route('/users', methods=['GET'], strict_slashes=False)
-def list_users():
-    """retrieves a list of all user objects using GET method"""
-    users = storage.all(User)
-
-    return jsonify([user.to_dict() for user in users.values()])
-
-
 @app_views.route('/users/<user_id>', methods=['GET'], strict_slashes=False)
 def a_user(user_id):
     """retrieves a user object using GET method"""
-    user_objects = storage.all(User)
+    users = storage.all(User)
+
+    if not user_id:
+        return jsonify([user.to_dict() for user in users.values()])
+
     user_key = "User." + user_id
-    if user_key not in user_objects:
+
+    if user_key not in users:
         abort(404)
-    return jsonify(user_objects[user_key].to_dict())
+
+    return jsonify(users[user_key].to_dict())
 
 
 @app_views.route('/users/<user_id>', methods=['DELETE'], strict_slashes=False)
-def delete_user(user_id):
+def delete_user(user_id=None):
     """deletes a user object using DELETE method"""
+    if not user_id:
+        abort(404)
+
     user_objects = storage.all(User)
     user_key = "User." + user_id
+
     if user_key not in user_objects:
         abort(404)
+
     user = user_objects[user_key]
     storage.delete(user)
     storage.save()
+
     return jsonify({}), 200
 
 
@@ -60,10 +65,13 @@ def create_user():
 
 
 @app_views.route('/users/<user_id>', methods=['PUT'], strict_slashes=False)
-def update_user(user_id):
+def update_user(user_id=None):
     """updates a user using PUT method"""
     if not request.is_json:
         abort(400, "Not a JSON")
+
+    if not user_id:
+        abort(404)
 
     user_objects = storage.all(User)
     user_key = "User." + user_id
