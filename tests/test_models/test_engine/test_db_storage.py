@@ -18,9 +18,14 @@ import json
 import os
 import pep8
 import unittest
+import MySQLdb
 DBStorage = db_storage.DBStorage
 classes = {"Amenity": Amenity, "City": City, "Place": Place,
            "Review": Review, "State": State, "User": User}
+
+db = MySQLdb.connect(host="localhost", user="hbnb_test",
+                     password="hbnb_test_pwd", database="hbnb_test_db",
+                     port=3306)
 
 
 class TestDBStorageDocs(unittest.TestCase):
@@ -86,3 +91,50 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_get(self):
+        """Test the get() method of db storage"""
+        storage = DBStorage()
+        cur = db.cursor()
+        new_state = State(**{"name": "Jersey"})
+        try:
+            select_state = "SELECT id FROM states WHERE id = %s"
+            cur.execute(select_state, (new_state.id,))
+            result = cur.fetchone()
+            self.assertIsNone(result)
+
+            insert_state = "INSERT INTO states (name, id) VALUES (%s, %s)"
+            cur.execute(insert_state, (new_state.name, new_state,id))
+            db.commit()
+
+        except Exception:
+            db.rollback()
+        storage.reload()
+        get_state = storage.get(State, new_state.id)
+        self.assertEqual(new_state.name, get_state.name)
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_count(self):
+        storage = DBStorage()
+        cur = db.cursor()
+        new_state = State(**{"name": "Wisconsin"})
+
+        try:
+            storage.reload()
+            count_state = "SELECT COUNT(*) AS s_count FROM states"
+            cur.execute(count_state)
+            result = cur.fetchone()
+            self.assertEqual(result[0], storage.count(State))
+
+            insert_state = "INSERT INTO states (name, id) VALUES (%s, %s)"
+            cur.execute(insert_state, (new_state.name, new_state,id))
+            db.commit()
+
+            self.assertEqual(storage.count(State) - result[0], 1)
+
+        except Exception:
+            db.rollback()
+        
+        cur.close()
+        db.close()
