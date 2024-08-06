@@ -25,7 +25,7 @@ def placeAmenities(place_id):
     place = places[key]
     amenities = place.amenities
 
-    return jsonify([amenity.to_dict() for amenity in amenities.values()])
+    return jsonify([amenity.to_dict() for amenity in amenities])
 
 
 @app_views.route('/places/<place_id>/amenities/<amenity_id>',
@@ -36,7 +36,7 @@ def deletePlaceAmenity(place_id, amenity_id):
     """
     places = storage.all(Place)
     amenities = storage.all(Amenity)
-    
+
     placeKey = 'Place.' + place_id
     amenityKey = 'Amenity.' + amenity_id
 

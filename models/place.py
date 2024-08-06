@@ -36,6 +36,7 @@ class Place(BaseModel, Base):
                                backref="place")
         amenities = relationship("Amenity",
                                  secondary="place_amenity",
+                                 cascade="all, delete-orphan",
                                  backref="place_amenities",
                                  viewonly=False)
     else:
