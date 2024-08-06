@@ -16,11 +16,13 @@ def placeAmenities(place_id):
     """
     Fetches all amenities linked to a Place
     """
-    place = storage.get(Place, place_id)
+    places = storage.all(Place)
+    key = 'Place.' + place_id
 
-    if not place:
+    if key not in places:
         abort(404)
 
+    place = places[key]
     amenities = place.amenities
 
     return jsonify([amenity.to_dict() for amenity in amenities.values()])
@@ -32,16 +34,21 @@ def deletePlaceAmenity(place_id, amenity_id):
     """
     Deletes an amenity linked to a place
     """
-    place = storage.get(Place, place_id)
-    amenity = storage.get(Amenity, amenity_id)
+    places = storage.all(Place)
+    amenities = storage.all(Amenity)
+    
+    placeKey = 'Place.' + place_id
+    amenityKey = 'Amenity.' + amenity_id
 
-    if not place or not amenity:
+    if placeKey not in places or amenityKey not in amenities:
         abort(404)
 
-    amenities = place.amenities
+    place = places[placeKey]
+    placeAmenities = place.amenities
+    amenity = amenities[amenityKey]
 
     if request.method == 'DELETE':
-        if 'Amenity.' + amenity_id not in amenities:
+        if amenityKey not in placeAmenities:
             abort(404)
 
         storage.delete(amenity)
@@ -50,9 +57,9 @@ def deletePlaceAmenity(place_id, amenity_id):
 
     if request.method == 'POST':
         statusCode = 200
-        if 'Amenity.' + amenity_id not in amenities:
+        if amenityKey not in placeAmenities:
             statusCode = 201
-            amenities.append(amenity)
+            placeAmenities.append(amenity)
             storage.save()
 
         return jsonify(amenity.to_dict()), statusCode
