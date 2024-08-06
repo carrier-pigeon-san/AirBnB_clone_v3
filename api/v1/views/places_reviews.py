@@ -18,7 +18,7 @@ def all_reviews(place_id):
     place_reviews = []
     reviews = storage.all(Review)
     places = storage.all(Place)
-    place_key = f"Place.{place_id}"
+    place_key = "Place." + place_id
     if place_key not in places:
         abort(404)
     for review in reviews.values():
@@ -32,7 +32,7 @@ def all_reviews(place_id):
 def a_review(review_id):
     """retrieves a review object"""
     reviews = storage.all(Review)
-    review_key = f"Review.{review_id}"
+    review_key = "Review." + review_id
     if review_key not in reviews:
         abort(404)
     review = reviews[review_key]
@@ -43,7 +43,7 @@ def a_review(review_id):
 def delete_reviews(review_id):
     """deletes a review object"""
     reviews = storage.all(Review)
-    review_key = f"Review.{review_id}"
+    review_key = "Review." + review_id
     if review_key not in reviews:
         abort(404)
     storage.delete(reviews[review_key])
@@ -57,7 +57,7 @@ def create_review(place_id):
     """creates a review"""
     places = storage.all(Place)
     users = storage.all(User)
-    place_key = f"Place.{place_id}"
+    place_key = "Place." + place_id
     if place_key not in places:
         abort(404)
     request_data = request.get_json()
@@ -67,7 +67,7 @@ def create_review(place_id):
         abort(400, "Missing user_id")
     if "text" not in request_data:
         abort(400, "Missing text")
-    user_key = f"User.{request_data.get('user_id')}"
+    user_key = "User." + request_data.get('user_id')
     if user_key not in users:
         abort(404)
     new_review = Review(**request_data)
@@ -80,7 +80,7 @@ def create_review(place_id):
 def update_review(review_id):
     """updates a review object"""
     reviews = storage.all(Review)
-    review_key = f"Review.{review_id}"
+    review_key = "Review." + review_id
     if review_key not in reviews:
         abort(404)
     review = reviews[review_key]

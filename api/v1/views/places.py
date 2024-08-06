@@ -19,7 +19,7 @@ def city_places(city_id):
     Gets or adds new place
     """
     cities = storage.all(City)
-    city_key = f"City.{city_id}"
+    city_key = "City." + city_id
 
     if city_key not in cities:
         abort(404)
@@ -43,9 +43,9 @@ def city_places(city_id):
             abort(400, 'Missing user_id')
 
         users = storage.all(User)
-        user_id = req_body['user_id']
+        user_key = "User." + req_body['user_id']
 
-        if f"User.{user_id}" not in users:
+        if user_key not in users:
             abort(404)
 
         place = Place(**req_body)
@@ -63,7 +63,7 @@ def places(place_id=None):
     Place object
     """
     places = storage.all(City)
-    place_key = f"Place.{place_id}"
+    place_key = "Place." + place_id
     place = places[place_key]
 
     if place_key not in places:

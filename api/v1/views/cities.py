@@ -16,7 +16,7 @@ def all_cities(state_id):
     state_cities = []
     city_objects = storage.all(City)
     state_objects = storage.all(State)
-    state_key = f'State.{state_id}'
+    state_key = 'State.' + state_id
 
     if state_key not in state_objects:
         abort(404)
@@ -31,8 +31,11 @@ def all_cities(state_id):
 @app_views.route('/cities/<city_id>', strict_slashes=False)
 def a_city(city_id=None):
     """retrieves a city object"""
+    if not city_id:
+        abort(404)
+
     city_objects = storage.all(City)
-    city_key = f'City.{city_id}'
+    city_key = 'City.' + city_id
 
     if city_key not in city_objects:
         abort(404)
@@ -41,10 +44,13 @@ def a_city(city_id=None):
 
 
 @app_views.route('/cities/<city_id>', methods=['DELETE'], strict_slashes=False)
-def delete_city(city_id):
+def delete_city(city_id=None):
     """deletes a city object"""
+    if not city_id:
+        abort(404)
+
     city_objects = storage.all(City)
-    city_key = f'City.{city_id}'
+    city_key = 'City.' + city_id
 
     if city_key not in city_objects:
         abort(404)
@@ -62,7 +68,7 @@ def create_city(state_id):
     if not request.is_json:
         abort(400, 'Not a JSON')
 
-    state_key = f'State.{state_id}'
+    state_key = 'State.' + state_id
 
     if state_key not in storage.all(State):
         abort(404)
@@ -87,7 +93,7 @@ def update_city(city_id):
         abort(400, "Not a JSON")
 
     city_objects = storage.all(City)
-    city_key = f'City.{city_id}'
+    city_key = 'City.' + city_id
 
     if city_key not in city_objects:
         abort(404)

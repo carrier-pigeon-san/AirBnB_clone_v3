@@ -24,7 +24,7 @@ def list_users():
 def a_user(user_id):
     """retrieves a user object using GET method"""
     user_objects = storage.all(User)
-    user_key = f"User.{user_id}"
+    user_key = "User." + user_id
     if user_key not in user_objects:
         abort(404)
     return jsonify(user_objects[user_key].to_dict()), 200
@@ -34,7 +34,7 @@ def a_user(user_id):
 def delete_user(user_id):
     """deletes a user object using DELETE method"""
     user_objects = storage.all(User)
-    user_key = f"User.{user_id}"
+    user_key = "User." + user_id
     if user_key not in user_objects:
         abort(404)
     user = user_objects[user_key]
@@ -68,7 +68,7 @@ def update_user(user_id):
         abort(400, "Not a JSON")
 
     user_objects = storage.all(User)
-    user_key = f"User.{user_id}"
+    user_key = "User." + user_id
 
     if user_key not in user_objects:
         abort(404)
