@@ -12,7 +12,7 @@ from models.user import User
 
 @app_views.route('/users', methods=['GET'], strict_slashes=False)
 @app_views.route('/users/<user_id>', methods=['GET'], strict_slashes=False)
-def a_user(user_id):
+def a_user(user_id=None):
     """retrieves a user object using GET method"""
     users = storage.all(User)
 
@@ -67,11 +67,11 @@ def create_user():
 @app_views.route('/users/<user_id>', methods=['PUT'], strict_slashes=False)
 def update_user(user_id=None):
     """updates a user using PUT method"""
-    if not request.is_json:
-        abort(400, "Not a JSON")
-
     if not user_id:
         abort(404)
+
+    if not request.is_json:
+        abort(400, "Not a JSON")
 
     user_objects = storage.all(User)
     user_key = "User." + user_id
