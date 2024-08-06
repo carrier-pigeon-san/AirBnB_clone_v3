@@ -62,7 +62,7 @@ def places(place_id=None):
     Defines GET, DELETE, and PUT actions for
     Place object
     """
-    places = storage.all(City)
+    places = storage.all(Place)
     place_key = "Place." + place_id
     place = places[place_key]
 
