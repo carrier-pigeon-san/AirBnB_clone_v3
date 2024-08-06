@@ -113,3 +113,48 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+    @unittest.skipIf(models.storage_t == 'db', "testing file storage")
+    def test_get(self):
+        """tests the retrieval of objects in storage by the storage.get()
+        method
+        """
+        storage = FileStorage()
+        state_count = storage.count(State)
+        new_state = State(**{"name": "New Jersey"})
+        new_state_id = new_state.id
+        new_state.save()
+        get_state = storage.get(State, new_state_id)
+        state_count2 = storage.count(State)
+        self.assertIsNotNone(get_state)
+        self.assertEqual(state_count2 - state_count, 1)
+        self.assertEqual(get_state.id, new_state_id)
+
+    @unittest.skipIf(models.storage_t == 'db', "testing file storage")
+    def test_count(self):
+        """tests FileStorage count() method"""
+        storage = FileStorage()
+        objs_storage = storage._FileStorage__objects
+
+        storage_size = len(objs_storage)
+        count = storage.count()
+        count_state = storage.count(State)
+        state_count = 0
+        for val in objs_storage.values():
+            if val.__class__.__name__ == "State":
+                state_count = state_count + 1
+
+        new_state = State(**{"name": "Utah"})
+        new_state.save()
+
+        storage_size2 = len(objs_storage)
+        count2 = storage.count()
+        count_state2 = storage.count(State)
+        state_count2 = 0
+        for val in objs_storage.values():
+            if val.__class__.__name__ == "State":
+                state_count2 = state_count2 + 1
+        self.assertEqual(count, storage_size)
+        self.assertEqual(count2, storage_size2)
+        self.assertEqual(count_state, state_count)
+        self.assertEqual(state_count2, state_count2)
