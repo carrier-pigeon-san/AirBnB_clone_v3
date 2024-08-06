@@ -65,7 +65,7 @@ def postPlaceAmenity(place_id, amenity_id=None):
     """
     if not amenity_id:
         abort(404)
-    
+
     places = storage.all(Place)
     placeKey = 'Place.' + place_id
 
